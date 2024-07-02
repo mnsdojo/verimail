@@ -1,6 +1,6 @@
 {
   "name": "verimail",
-  "module": "index.ts",
+  "module": "server/index.ts",
   "type": "module",
   "scripts": {
     "start": "bun server/index.ts",
@@ -11,9 +11,5 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "hono": "^4.4.10",
-    "zod": "^3.23.8"
   }
 }
