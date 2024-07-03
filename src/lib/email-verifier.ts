@@ -1,8 +1,21 @@
 import dns from "dns/promises";
 
+export interface VerifierResponse {
+  isDisposable: boolean;
+  isDomainExists: boolean;
+  domain: string;
+  status: string;
+  reason: string;
+  hasMXRecords: boolean;
+  validFormat: "ok" | "invalid";
+}
 class EmailVerifier {
   constructor(private allowedProviders: string[]) {
     this.allowedProviders = allowedProviders;
+  }
+  private validateEmailFormat(email: string): "ok" | "invalid" {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email) ? "ok" : "invalid";
   }
 
   private async checkMXRecords(domain: string): Promise<boolean> {
@@ -31,6 +44,7 @@ class EmailVerifier {
   public async validateEmail(email: string) {
     const domain = email.split("@")[1];
     const isDisposable = this.isDisposable(email);
+    const validFormat = this.validateEmailFormat(email);
     const [isDomainExists, hasMXRecords] = await Promise.all([
       this.checkDomainExists(domain),
       this.checkMXRecords(domain),
@@ -60,6 +74,7 @@ class EmailVerifier {
       status,
       reason,
       hasMXRecords,
+      validFormat,
     };
   }
 }
